@@ -1,0 +1,6 @@
+import nltk
+text = "I am going to chennai"
+words = nltk.word_tokenize(text)
+pos_tags = nltk.pos_tag(words)
+print("Original Text:", text)
+print("Part-of-Speech Tags:", pos_tags)

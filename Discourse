@@ -1,0 +1,14 @@
+from gensim.summarization import summarize
+
+text = """
+Your input text goes here. It can be a long piece of text or a document.
+Discourse refers to the way language is structured and used to convey information, 
+often in the form of conversation or written text. In this example, we will 
+demonstrate how to perform discourse analysis using text summarization.
+"""
+
+
+summary = summarize(text)
+
+print("Summary:")
+print(summary)

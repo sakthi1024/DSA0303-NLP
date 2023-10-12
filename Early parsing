@@ -1,0 +1,52 @@
+def expr():
+    term()
+    expr_tail()
+
+def expr_tail():
+    if token == '+':
+        match('+')
+        term()
+        expr_tail()
+    elif token == '-':
+        match('-')
+        term()
+        expr_tail()
+
+def term():
+    factor()
+    term_tail()
+
+def term_tail():
+    if token == '*':
+        match('*')
+        factor()
+        term_tail()
+    elif token == '/':
+        match('/')
+        factor()
+        term_tail()
+
+def factor():
+    if token.isdigit():
+        match(token)
+    elif token == '(':
+        match('(')
+        expr()
+        match(')')
+
+def match(expected_token):
+    global token
+    if token == expected_token:
+        token = get_next_token()
+    else:
+        raise SyntaxError(f"Expected {expected_token}, but found {token}")
+
+def get_next_token():
+    
+
+ Token = get_next_token()
+expr()
+if token == '$':
+    print("Parsing successful")
+else:
+    print("Parsing failed")

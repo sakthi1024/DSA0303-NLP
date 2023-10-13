@@ -1,0 +1,49 @@
+import nltk
+from nltk.corpus import stopwords
+from nltk.cluster.util import cosine_distance
+import numpy as np
+nltk.download('punkt') 
+nltk.download('stopwords')
+def read_article(article):
+    sentences = nltk.sent_tokenize(article)
+    return sentences
+def sentence_similarity(sent1, sent2, stopwords=None):
+    if stopwords is None:
+        stopwords = []
+    sent1 = [word.lower() for word in sent1]
+    sent2 = [word.lower() for word in sent2]
+    all_words = list(set(sent1 + sent2))
+    vector1 = [0] * len(all_words)
+    vector2 = [0] * len(all_words)
+    for word in sent1:
+        if word not in stopwords:
+            vector1[all_words.index(word)] += 1
+    for word in sent2:
+        if word not in stopwords:
+            vector2[all_words.index(word)] += 1
+    return 1 - cosine_distance(vector1, vector2)
+def build_similarity_matrix(sentences, stop_words):
+    similarity_matrix = np.zeros((len(sentences), len(sentences)))
+    for i in range(len(sentences)):
+        for j in range(len(sentences)):
+            if i != j:
+                similarity_matrix[i][j] = sentence_similarity(sentences[i], sentences[j], stop_words)
+    return similarity_matrix
+def generate_summary(article, top_n=5):
+    stop_words = stopwords.words('english')
+    summarize_text = []
+    sentences = read_article(article)
+    sentence_similarity_matrix = build_similarity_matrix(sentences, stop_words)
+    scores = [sum(sentence_similarity_matrix[i]) for i in range(len(sentences))]
+    ranked_sentences = [sentence for sentence, score in sorted(enumerate(scores), key=lambda x: x[1], reverse=True)]
+    for i in range(top_n):
+        summarize_text.append(sentences[ranked_sentences[i]])
+    return " ".join(summarize_text)
+article = """
+Natural language processing (NLP) is a field of artificial intelligence that focuses on the interaction between computers and humans through natural language. The ultimate goal of NLP is to read, decipher, understand, and make sense of the human language in a manner that is both valuable and meaningful. One common application of NLP is text summarization. Text summarization is the process of distilling the most important information from a source text.
+There are two main approaches to text summarization: extractive and abstractive. Extractive summarization involves selecting and extracting significant sentences from the source text, while abstractive summarization aims to generate a summary in a more human-like fashion.
+In this example, we'll focus on extractive text summarization using a simple algorithm. The algorithm identifies important sentences in the source text based on their similarity to other sentences. These important sentences are then used to generate the summary.
+We will use the NLTK library and a sample article for demonstration. Let's generate a summary of the provided article:
+"""
+summary = generate_summary(article)
+print(summary)
